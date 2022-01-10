@@ -43,9 +43,9 @@ contract NFTMarket is ReentrancyGuard{
             return listingPrice;
     }
     //nonReentrant identifier is used to prevent reentrancy attacks
-    function createMArketItem(address nftContract, uint256 tokenId, uint256 price) public payable nonReentrant{
+    function createMarketItem(address nftContract, uint256 tokenId, uint256 price) public payable nonReentrant{
         require(price>0, "Price must be at least 1 wei");
-        require(msg.value> listingPrice, "Price must be greater than listing price");
+        require(msg.value== listingPrice, "Price must be equal than listing price");
 
         _itemIds.increment(); //first item id is 1
         uint256 itemId= _itemIds.current();

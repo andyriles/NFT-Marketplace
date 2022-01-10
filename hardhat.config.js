@@ -1,11 +1,11 @@
 require("@nomiclabs/hardhat-waffle");
 const fs = require("fs");
 const privateKey = fs.readFileSync(".secret").toString();
-const projectId = "a8bf1ecdae76466d8e5c4281760423b6";
+const projectId = fs.readFileSync(".infuraId").toString();
 
 module.exports = {
   networks: {
-    hardhar: {
+    hardhat: {
       chainId: 1337,
     },
     mumbai: {

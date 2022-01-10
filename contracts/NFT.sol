@@ -16,7 +16,7 @@ constructor(address _marketPlaceAddress) ERC721("Splash Tokens", "SPLT"){
 }
 
 function createToken(string memory tokenURI) public returns(uint){
-    //increment tokenId starting from 0
+    //increment tokenId starting from 1
     _tokenIds.increment();
     //get current value to the tokenId
     uint256 newItemId = _tokenIds.current();
