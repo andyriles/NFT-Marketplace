@@ -130,7 +130,7 @@ contract NFTMarket is ReentrancyGuard{
         }
         //get list of items sold
         MarketItem[] memory items= new MarketItem[](itemCount);
-        for(uint i= 0; i< itemCount; i++){
+        for(uint i= 0; i< totalItemCount; i++){
         if(idToMarketItem[i+1].newOwner == msg.sender){
             uint currentId= i+1;
             MarketItem storage currentItem= idToMarketItem[currentId];
@@ -155,7 +155,7 @@ contract NFTMarket is ReentrancyGuard{
         }
         //get list of items created
         MarketItem[] memory items= new MarketItem[](itemCount);
-        for(uint i= 0; i< itemCount; i++){
+        for(uint i= 0; i< totalItemCount; i++){
         if(idToMarketItem[i+1].seller == msg.sender){
             uint currentId= i+1;
             MarketItem storage currentItem= idToMarketItem[currentId];
