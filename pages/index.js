@@ -10,9 +10,15 @@ import Market from "../artifacts/contracts/NFTMarket.sol/NFTMarket.json";
 export default function Home() {
   const [nfts, setNfts] = useState([]);
   const [loaded, setLoaded] = useState(false);
+  const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    loadNfts();
+    if (window.ethereum) {
+      setConnected(true);
+      loadNfts();
+    } else {
+      alert("Please install MetaMask to use this app");
+    }
   }, []);
 
   //call smart contract and fetch NFTs
@@ -77,8 +83,15 @@ export default function Home() {
       </h1>
     );
   }
-  if (!loaded) {
+  if (!loaded && connected) {
     return <h1 className="px-20 py-10 text-3xl text-center">Loading...</h1>;
+  }
+  if (!loaded && !connected) {
+    return (
+      <h1 className="px-20 py-10 text-3xl text-center">
+        Please install MetaMask to use this app
+      </h1>
+    );
   }
   return (
     <div className="flex justify-center">
