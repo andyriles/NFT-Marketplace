@@ -17,7 +17,8 @@ export default function CreateItem() {
     name: "",
     description: "",
   });
-
+  const [buttonText, setButtonText] = useState("Create Digital Asset");
+  const [error, setError] = useState(null);
   const router = useRouter();
 
   //upload file to IPFS
@@ -37,20 +38,26 @@ export default function CreateItem() {
   //upload form to IPFS
   const createMarketItem = async () => {
     const { name, description, price } = formInput;
-    if (!name || !description || !price || !fileUrl) return;
-    /* first, upload to IPFS */
-    const data = JSON.stringify({
-      name,
-      description,
-      image: fileUrl,
-    });
-    try {
-      const added = await client.add(data);
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-      /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
-      createSale(url);
-    } catch (error) {
-      console.log("Error uploading file: ", error);
+    if (name == "" || !description || !price || !fileUrl) {
+      setError("Please fill in all fields");
+    } else if (isNaN(price)) {
+      setError("Price must be a number");
+    } else {
+      setButtonText("Creating Digital Asset... This may take a while");
+      /* first, upload to IPFS */
+      const data = JSON.stringify({
+        name,
+        description,
+        image: fileUrl,
+      });
+      try {
+        const added = await client.add(data);
+        const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+        /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
+        createSale(url);
+      } catch (error) {
+        console.log("Error uploading file: ", error);
+      }
     }
   };
 
@@ -113,10 +120,19 @@ export default function CreateItem() {
         {fileUrl && <img className="rounded mt-4" width="350" src={fileUrl} />}
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold mt-4 p-4 rounded shadow-lg"
-          onClick={createMarketItem}
+          onClick={() => {
+            if (window.ethereum) {
+              createMarketItem();
+            } else {
+              setError(
+                "Please install a wallet with some test MATIC to create a digital asset"
+              );
+            }
+          }}
         >
-          Create Digital Asset
+          {buttonText}
         </button>
+        <p style={{ color: "red" }}>{error}</p>
       </div>
     </div>
   );

@@ -6,19 +6,16 @@ import Web3Modal from "web3modal";
 import { nftAddress, nftMarketAddress } from "../config";
 import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 import Market from "../artifacts/contracts/NFTMarket.sol/NFTMarket.json";
+import Loader from "../components/Loader";
 
 export default function Home() {
   const [nfts, setNfts] = useState([]);
   const [loaded, setLoaded] = useState(false);
-  const [connected, setConnected] = useState(false);
+  //const [connected, setConnected] = useState(false);
+  const [buttonText, setButtonText] = useState("Buy");
 
   useEffect(() => {
-    if (window.ethereum) {
-      setConnected(true);
-      loadNfts();
-    } else {
-      alert("Please install MetaMask to use this app");
-    }
+    loadNfts();
   }, []);
 
   //call smart contract and fetch NFTs
@@ -83,23 +80,21 @@ export default function Home() {
       </h1>
     );
   }
-  if (!loaded && connected) {
-    return <h1 className="px-20 py-10 text-3xl text-center">Loading...</h1>;
+  if (!loaded) {
+    return <Loader />;
   }
-  if (!loaded && !connected) {
-    return (
-      <h1 className="px-20 py-10 text-3xl text-center">
-        Please install MetaMask to use this app
-      </h1>
-    );
-  }
+
   return (
     <div className="flex justify-center">
       <div className="px-4" style={{ maxWidth: "1600px" }}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
           {nfts.map((nft, i) => (
             <div key={i} className="border shadow rounded-xl overflow-hidden">
-              <img src={nft.image} alt={nft.name} />
+              <img
+                src={nft.image}
+                alt={nft.name}
+                style={{ height: "20rem", width: "100%" }}
+              />
               <div className="p-4">
                 <p
                   style={{ height: "64px" }}
@@ -117,9 +112,18 @@ export default function Home() {
                 </p>
                 <button
                   className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-12 "
-                  onClick={() => buyNFT(nft)}
+                  onClick={() => {
+                    if (window.ethereum) {
+                      buyNFT(nft);
+                      setButtonText("Processing...");
+                    } else {
+                      alert(
+                        "No wallet detected. Please install a wallet with some test MATIC to complete your transaction"
+                      );
+                    }
+                  }}
                 >
-                  Buy
+                  {buttonText}
                 </button>
               </div>
             </div>

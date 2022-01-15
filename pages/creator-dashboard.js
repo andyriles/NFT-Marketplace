@@ -2,6 +2,7 @@ import { ethers } from "ethers";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Web3Modal from "web3modal";
+import Loader from "../components/Loader";
 
 import { nftAddress, nftMarketAddress } from "../config";
 
@@ -12,8 +13,12 @@ export default function CreatorDashboard() {
   const [nfts, setNfts] = useState([]);
   const [sold, setSold] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
+  const [connected, setConnected] = useState(false);
   useEffect(() => {
-    loadNFTs();
+    if (window.ethereum) {
+      setConnected(true);
+      loadNFTs();
+    }
   }, []);
   async function loadNFTs() {
     const web3Modal = new Web3Modal();
@@ -51,7 +56,14 @@ export default function CreatorDashboard() {
     setNfts(items);
     setLoadingState("loaded");
   }
-  if (loadingState === "loaded" && !nfts.length)
+  if (!connected)
+    return (
+      <h1 className="py-10 px-20 text-3xl">
+        Please connect your wallet to view your dashboard
+      </h1>
+    );
+  if (loadingState !== "loaded" && connected) return <Loader />;
+  if (loadingState === "loaded" && !nfts.length && connected)
     return <h1 className="py-10 px-20 text-3xl">No assets created</h1>;
   return (
     <div>
@@ -63,7 +75,7 @@ export default function CreatorDashboard() {
               <img src={nft.image} className="rounded" />
               <div className="p-4 bg-black">
                 <p className="text-2xl font-bold text-white">
-                  Price - {nft.price} Eth
+                  Price - {nft.price} Matic
                 </p>
               </div>
             </div>
@@ -80,10 +92,14 @@ export default function CreatorDashboard() {
                   key={i}
                   className="border shadow rounded-xl overflow-hidden"
                 >
-                  <img src={nft.image} className="rounded" />
+                  <img
+                    src={nft.image}
+                    className="rounded"
+                    style={{ height: "20rem", width: "100%" }}
+                  />
                   <div className="p-4 bg-black">
                     <p className="text-2xl font-bold text-white">
-                      Price - {nft.price} Eth
+                      Price - {nft.price} Matic
                     </p>
                   </div>
                 </div>

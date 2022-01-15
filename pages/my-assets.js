@@ -7,12 +7,17 @@ import { nftAddress, nftMarketAddress } from "../config";
 
 import NFT from "../artifacts/contracts/NFT.sol/NFT.json";
 import Market from "../artifacts/contracts/NFTMarket.sol/NFTMarket.json";
+import Loader from "../components/Loader";
 
 export default function MyAssets() {
   const [nfts, setNfts] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
+  const [connected, setConnected] = useState(false);
   useEffect(() => {
-    loadNFTs();
+    if (window.ethereum) {
+      setConnected(true);
+      loadNFTs();
+    }
   }, []);
   async function loadNFTs() {
     const web3Modal = new Web3Modal();
@@ -46,15 +51,30 @@ export default function MyAssets() {
     setNfts(items);
     setLoadingState("loaded");
   }
-  if (loadingState === "loaded" && !nfts.length)
+  if (!connected)
+    return (
+      <h1 className="py-10 px-20 text-3xl">
+        Please connect your wallet to view the assets you've bought
+      </h1>
+    );
+  if (loadingState !== "loaded" && connected) return <Loader />;
+  if (loadingState === "loaded" && !nfts.length && connected)
     return <h1 className="py-10 px-20 text-3xl">No assets owned</h1>;
   return (
     <div className="flex justify-center">
       <div className="p-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 ">
           {nfts.map((nft, i) => (
-            <div key={i} className="border shadow rounded-xl overflow-hidden">
-              <img src={nft.image} className="rounded" />
+            <div
+              key={i}
+              className="border shadow rounded-xl overflow-hidden"
+              //style={{ height: "50%", width: "100%" }}
+            >
+              <img
+                src={nft.image}
+                className="rounded"
+                style={{ height: "20rem", width: "100%" }}
+              />
               <div className="p-4 bg-black">
                 <p className="text-2xl font-bold text-white">
                   Price - {nft.price} Matic
