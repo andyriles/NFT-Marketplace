@@ -54,7 +54,7 @@ export default function MyAssets() {
   if (!connected)
     return (
       <h1 className="py-10 px-20 text-3xl">
-        Please connect your wallet to view the assets you've bought
+        Please connect your wallet to view the assets you&apos;ve bought
       </h1>
     );
   if (loadingState !== "loaded" && connected) return <Loader />;
