@@ -1,6 +1,6 @@
 #### About
 
-This project was made with Solidity, Next.js and TailwindCSS.
+This project was made with Solidity, openZeppelin, Next.js and TailwindCSS.
 The live site can be found [here](https://splash-nft.netlify.app/)
 
 #### Local setup
